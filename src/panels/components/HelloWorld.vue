@@ -4,13 +4,25 @@ import { ref } from 'vue'
 defineProps<{ msg: string }>()
 
 const count = ref(0)
+const change = () => {
+  chrome.devtools.inspectedWindow.eval(
+    'window.myCustomProperty = "Hello, world!"; console.log(window.myCustomProperty);',
+    function(result, isException) {
+      if (isException) {
+        console.log("Error: " + isException.value);
+      } else {
+        console.log("Success: " + result);
+      }
+    }
+  );
+}
 </script>
 
 <template>
   <h1>{{ msg }}</h1>
 
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
+    <button type="button" @click="change">count is {{ count }}</button>
     <p>
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
